@@ -1,5 +1,6 @@
 ﻿using MikuMikuLibrary.Bones;
 using MikuMikuLibrary.Databases;
+using MikuMikuLibrary.Databases.PVPP;
 using MikuMikuLibrary.IO;
 using MikuMikuLibrary.Stages;
 
@@ -17,7 +18,8 @@ internal class Program
         new(typeof(StageData), "stagedata", "stg"),
         new(typeof(StringArray), "strarray", "str"),
         new(typeof(StringArray), "stringarray", "str"),
-        new(typeof(TextureDatabase), "texdb", "txi")
+        new(typeof(TextureDatabase), "texdb", "txi"),
+        new(typeof(PVPerformerParameter), "pvpp", "pvpp")
     };
 
     private static DatabaseInfo GetDatabaseInfo(string fileName)
@@ -75,6 +77,7 @@ Sprite Database (spr_db.bin)
 Stage Database (stage_data.bin)
 String Array (str_array.bin and string_array.bin)
 Texture Database (tex_db.bin)
+PV Performer Parameter (pv###.pvpp)
 
 DLC database files in Future Tone (files with 'mdata' prefix) are also supported.");
             Console.ReadLine();
