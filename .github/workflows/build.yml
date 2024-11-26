@@ -1,0 +1,50 @@
+name: Build MikuMikuLibrary
+
+on:
+  push:
+    branches:
+      - main
+      - '*'
+  pull_request:
+    branches:
+      - main
+      - '*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up VS2022
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore MikuMikuLibrary.sln
+
+    - name: Install FBX SDK
+      run: |
+        Invoke-WebRequest "https://www.autodesk.com/content/dam/autodesk/www/adn/fbx/2020-3-2/fbx202032_fbxsdk_vs2019_win.exe" -OutFile "FBX.exe"
+        Start-Process -Wait "FBX.exe" "/S /D=$env:GITHUB_WORKSPACE\MikuMikuLibrary.Native\Dependencies\FBX"
+
+    - name: Build MikuMikuLibrary
+      run: |
+        msbuild MikuMikuLibrary.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Run publish script
+      run: ./publish.bat
+
+    - name: Upload x64 artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: MikuMikuLibrary-x64.7z
+        path: publish/MikuMikuLibrary-x64.7z
+
+    - name: Upload x86 artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: MikuMikuLibrary-x86.7z
+        path: publish/MikuMikuLibrary-x86.7z
